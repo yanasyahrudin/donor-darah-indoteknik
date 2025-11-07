@@ -11,11 +11,11 @@ class ParticipantController extends Controller
     public function create()
     {
         $quota = [
-            'sesi_1' => 50 - Participant::where('session', 'sesi_1')->count(),
-            'sesi_2' => 50 - Participant::where('session', 'sesi_2')->count(),
-            'sesi_3' => 50 - Participant::where('session', 'sesi_3')->count(),
-            'sesi_4' => 50 - Participant::where('session', 'sesi_4')->count(),
-            'sesi_5' => 50 - Participant::where('session', 'sesi_5')->count(),
+            'sesi_1' => 72 - Participant::where('session', 'sesi_1')->count(),
+            'sesi_2' => 72 - Participant::where('session', 'sesi_2')->count(),
+            'sesi_3' => 72 - Participant::where('session', 'sesi_3')->count(),
+            'sesi_4' => 72 - Participant::where('session', 'sesi_4')->count(),
+            'sesi_5' => 72 - Participant::where('session', 'sesi_5')->count(),
         ];
 
         return view('form', compact('quota'));
@@ -23,18 +23,44 @@ class ParticipantController extends Controller
 
     public function store(Request $request)
     {
+        // Normalisasi nomor WhatsApp
+        $whatsapp = $request->whatsapp;
+
+        // Hapus semua karakter non-angka (spasi, strip, +, dll)
+        $whatsapp = preg_replace('/[^0-9]/', '', $whatsapp);
+
+        // Ubah format 62xxx menjadi 08xxx untuk konsistensi
+        if (substr($whatsapp, 0, 2) === '62') {
+            $whatsapp = '0' . substr($whatsapp, 2);
+        }
+
+         // Update request dengan nomor yang sudah dinormalisasi
+        $request->merge(['whatsapp' => $whatsapp]);
+
         $request->validate([
             'name' => 'required',
             'golongan_darah' => 'required',
-            'whatsapp' => 'required|regex:/^[0-9]+$/',
+            'whatsapp' => 'required|regex:/^[0-9]+$/|unique:participants,whatsapp',
             'session' => 'required|in:sesi_1,sesi_2,sesi_3,sesi_4,sesi_5',
             'umur_valid' => 'accepted',
             'sehat' => 'accepted',
             'umur' => 'required|integer|min:17|max:65',
+        ], [
+            'whatsapp.required' => 'Nomor WhatsApp wajib diisi.',
+            'whatsapp.regex' => 'Nomor WhatsApp harus berupa angka.',
+            'whatsapp.unique' => 'Nomor WhatsApp ini sudah terdaftar. Anda tidak bisa mendaftar 2 kali.',
+            'name.required' => 'Nama wajib diisi.',
+            'golongan_darah.required' => 'Golongan darah wajib dipilih.',
+            'session.required' => 'Sesi wajib dipilih.',
+            'umur.required' => 'Umur wajib diisi.',
+            'umur.min' => 'Umur minimal 17 tahun.',
+            'umur.max' => 'Umur maksimal 65 tahun.',
+            'umur_valid.accepted' => 'Anda harus mencentang bahwa umur sudah sesuai.',
+            'sehat.accepted' => 'Anda harus mencentang bahwa kondisi sehat.',
         ]);
 
         $count = Participant::where('session', $request->session)->count();
-        if ($count >= 50) {
+        if ($count >= 72) {
             return back()->with('error', 'Kuota sesi ini sudah penuh, silakan pilih sesi lain.');
         }
 

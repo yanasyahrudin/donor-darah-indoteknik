@@ -16,13 +16,13 @@ class DashboardController extends Controller
 
         $participants = Participant::orderBy('created_at', 'desc')->get();
 
-        // Kuota maksimal per sesi (atur sesuai kebutuhan)
+        // Kuota maksimal per sesi (72 per sesi = 360 total)
         $kuotaSesi = [
-            'sesi_1' => 50,
-            'sesi_2' => 50,
-            'sesi_3' => 50,
-            'sesi_4' => 50,
-            'sesi_5' => 50,
+            'sesi_1' => 72,
+            'sesi_2' => 72,
+            'sesi_3' => 72,
+            'sesi_4' => 72,
+            'sesi_5' => 72,
         ];
 
         // Hitung jumlah peserta tiap sesi
@@ -49,7 +49,7 @@ class DashboardController extends Controller
         ]);
 
         $count = Participant::where('session', $request->session)->count();
-        if ($count >= 50) {
+        if ($count >= 72) {
             return back()->with('error', 'Kuota sesi ini sudah penuh, silakan pilih sesi lain.');
         }
 
@@ -123,5 +123,14 @@ Multi Permata Aircond
         }
 
         return redirect()->back()->with('success', 'Peserta berhasil ditambahkan dan pesan WA sudah dikirim.');
+    }
+
+    public function updateKeterangan(Request $request, $id)
+    {
+        $participant = Participant::findOrFail($id);
+        $participant->keterangan = $request->keterangan;
+        $participant->save();
+
+        return redirect()->back()->with('success', 'Keterangan berhasil diupdate.');
     }
 }
