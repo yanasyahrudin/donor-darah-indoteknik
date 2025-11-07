@@ -54,9 +54,16 @@
                 <span class="text-gray-700 text-sm">Silakan isi data diri Anda dengan benar pada form pendaftaran di bawah ini.</span>
             </div>
 
+
             <div>
                 <label class="block text-gray-700 font-medium mb-1">Nama Lengkap<span class="text-red-500">*</span></label>
                 <input type="text" name="name" placeholder="Masukkan nama kamu"
+                    class="border border-gray-300 w-full p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" required>
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Email<span class="text-red-500">*</span></label>
+                <input type="email" name="email" placeholder="email@aktif.com"
                     class="border border-gray-300 w-full p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" required>
             </div>
 

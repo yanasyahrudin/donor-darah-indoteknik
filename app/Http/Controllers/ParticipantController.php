@@ -39,6 +39,7 @@ class ParticipantController extends Controller
 
         $request->validate([
             'name' => 'required',
+            'email' => 'required|email|unique:participants,email',
             'golongan_darah' => 'required',
             'whatsapp' => 'required|regex:/^[0-9]+$/|unique:participants,whatsapp',
             'session' => 'required|in:sesi_1,sesi_2,sesi_3,sesi_4,sesi_5',
@@ -46,6 +47,9 @@ class ParticipantController extends Controller
             'sehat' => 'accepted',
             'umur' => 'required|integer|min:17|max:65',
         ], [
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email ini sudah terdaftar.',
             'whatsapp.required' => 'Nomor WhatsApp wajib diisi.',
             'whatsapp.regex' => 'Nomor WhatsApp harus berupa angka.',
             'whatsapp.unique' => 'Nomor WhatsApp ini sudah terdaftar. Anda tidak bisa mendaftar 2 kali.',
@@ -70,6 +74,7 @@ class ParticipantController extends Controller
 
         $participant = Participant::create([
             'name' => $request->name,
+            'email' => $request->email,
             'golongan_darah' => $request->golongan_darah,
             'whatsapp' => $request->whatsapp,
             'ticket_code' => $ticketCode,
@@ -120,21 +125,40 @@ MKN
 Bank Mandiri
 Multi Permata Aircond
 ";
-        $response = Http::withHeaders([
-            'Authorization' => env('FONNTE_TOKEN'),
-        ])->asForm()->post('https://api.fonnte.com/send', [
-            'target' => $participant->whatsapp,
-            'message' => $message,
-        ]);
-
-        if ($response->successful()) {
-            $participant->update(['is_sent' => true]);
+        $waSuccess = false;
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => env('FONNTE_TOKEN'),
+            ])->asForm()->post('https://api.fonnte.com/send', [
+                'target' => $participant->whatsapp,
+                'message' => $message,
+            ]);
+            if ($response->successful()) {
+                $participant->update(['is_sent' => true]);
+                $waSuccess = true;
+            }
+        } catch (\Exception $e) {
+            // log error jika perlu
         }
 
+        // Kirim email SELALU, baik WA sukses atau gagal
+        try {
+            $sessionLabel = [
+                'sesi_1' => 'Sesi 1 (09.00 - 10.00 WIB)',
+                'sesi_2' => 'Sesi 2 (10.00 - 11.00 WIB)',
+                'sesi_3' => 'Sesi 3 (11.00 - 12.00 WIB)',
+                'sesi_4' => 'Sesi 4 (13.00 - 14.00 WIB)',
+                'sesi_5' => 'Sesi 5 (14.00 - 15.30 WIB)',
+            ][$request->session];
+            \Mail::to($request->email)->send(new \App\Mail\ParticipantRegistered($participant, $sessionLabel));
+        } catch (\Exception $e) {
+            // log error jika perlu
+        }
+
+        $notifMsg = "Tiket kamu sudah dikirim via WhatsApp dan Email. Kode Tiket Anda: {$participant->ticket_code} Silahkan cek WhatsApp dan Email Anda.";
+
         return redirect()->route('form')
-        ->with('success', "Tiket kamu sudah dikirim via WhatsApp. 
-        Kode Tiket Anda: {$participant->ticket_code} 
-        Silahkan di Screenshot.");
+            ->with('success', $notifMsg);
     }
 
     public function index()
