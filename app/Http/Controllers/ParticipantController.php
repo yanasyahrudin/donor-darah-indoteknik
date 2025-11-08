@@ -39,7 +39,7 @@ class ParticipantController extends Controller
 
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:participants,email',
+            'email' => 'required',
             'golongan_darah' => 'required',
             'whatsapp' => 'required|regex:/^[0-9]+$/|unique:participants,whatsapp',
             'session' => 'required|in:sesi_1,sesi_2,sesi_3,sesi_4,sesi_5',
@@ -48,8 +48,6 @@ class ParticipantController extends Controller
             'umur' => 'required|integer|min:17|max:65',
         ], [
             'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email ini sudah terdaftar.',
             'whatsapp.required' => 'Nomor WhatsApp wajib diisi.',
             'whatsapp.regex' => 'Nomor WhatsApp harus berupa angka.',
             'whatsapp.unique' => 'Nomor WhatsApp ini sudah terdaftar. Anda tidak bisa mendaftar 2 kali.',

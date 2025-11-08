@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('participants', function (Blueprint $table) {
-            $table->string('email')->after('name');
+            $table->string('email')->after('name'); // No unique constraint
         });
     }
 
