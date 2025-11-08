@@ -18,11 +18,11 @@ class DashboardController extends Controller
 
         // Kuota maksimal per sesi (72 per sesi = 360 total)
         $kuotaSesi = [
-            'sesi_1' => 72,
-            'sesi_2' => 72,
-            'sesi_3' => 72,
+            'sesi_1' => 76, // 72 + 4
+            'sesi_2' => 77, // 72 + 5
+            'sesi_3' => 82, // 72 + 10
             'sesi_4' => 72,
-            'sesi_5' => 72,
+            'sesi_5' => 75, // 72 + 3
         ];
 
         // Hitung jumlah peserta tiap sesi
@@ -48,8 +48,15 @@ class DashboardController extends Controller
             'umur' => 'integer|min:17|max:65',
         ]);
 
+        $kuotaSesi = [
+            'sesi_1' => 76,
+            'sesi_2' => 77,
+            'sesi_3' => 82,
+            'sesi_4' => 72,
+            'sesi_5' => 75,
+        ];
         $count = Participant::where('session', $request->session)->count();
-        if ($count >= 72) {
+        if ($count >= ($kuotaSesi[$request->session] ?? 72)) {
             return back()->with('error', 'Kuota sesi ini sudah penuh, silakan pilih sesi lain.');
         }
 

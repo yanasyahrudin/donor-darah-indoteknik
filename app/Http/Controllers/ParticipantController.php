@@ -11,11 +11,11 @@ class ParticipantController extends Controller
     public function create()
     {
         $quota = [
-            'sesi_1' => 72 - Participant::where('session', 'sesi_1')->count(),
-            'sesi_2' => 72 - Participant::where('session', 'sesi_2')->count(),
-            'sesi_3' => 72 - Participant::where('session', 'sesi_3')->count(),
+            'sesi_1' => 76 - Participant::where('session', 'sesi_1')->count(),
+            'sesi_2' => 77 - Participant::where('session', 'sesi_2')->count(),
+            'sesi_3' => 82 - Participant::where('session', 'sesi_3')->count(),
             'sesi_4' => 72 - Participant::where('session', 'sesi_4')->count(),
-            'sesi_5' => 72 - Participant::where('session', 'sesi_5')->count(),
+            'sesi_5' => 75 - Participant::where('session', 'sesi_5')->count(),
         ];
 
         return view('form', compact('quota'));
@@ -61,8 +61,15 @@ class ParticipantController extends Controller
             'sehat.accepted' => 'Anda harus mencentang bahwa kondisi sehat.',
         ]);
 
+        $kuotaSesi = [
+            'sesi_1' => 76,
+            'sesi_2' => 77,
+            'sesi_3' => 82,
+            'sesi_4' => 72,
+            'sesi_5' => 75,
+        ];
         $count = Participant::where('session', $request->session)->count();
-        if ($count >= 72) {
+        if ($count >= ($kuotaSesi[$request->session] ?? 72)) {
             return back()->with('error', 'Kuota sesi ini sudah penuh, silakan pilih sesi lain.');
         }
 
