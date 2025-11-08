@@ -88,6 +88,7 @@
                 <thead class="bg-blue-600 text-white">
                     <tr>
                         <th class="p-3 text-left">Nama</th>
+                            <th class="p-3 text-left">Umur</th>
                         <th class="p-3 text-left">Email</th>
                         <th class="p-3 text-left">Golongan Darah</th>
                         <th class="p-3 text-left">WhatsApp</th>
@@ -111,6 +112,7 @@
                         @endphp
                         <tr class="border-b hover:bg-blue-50 transition">
                             <td class="p-3 font-medium">{{ $p->name }}</td>
+                                <td class="p-3">{{ $p->umur ?? '-' }} tahun</td>
                             <td class="p-3">{{ $p->email }}</td>
                             <td class="p-3">{{ $p->golongan_darah }}</td>
                             <td class="p-3">{{ $p->whatsapp }}</td>
