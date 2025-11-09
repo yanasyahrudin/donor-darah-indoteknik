@@ -12,8 +12,8 @@ class ParticipantController extends Controller
     {
         $quota = [
             'sesi_1' => 76 - Participant::where('session', 'sesi_1')->count(),
-            'sesi_2' => 77 - Participant::where('session', 'sesi_2')->count(),
-            'sesi_3' => 82 - Participant::where('session', 'sesi_3')->count(),
+            'sesi_2' => 72 - Participant::where('session', 'sesi_2')->count(),
+            'sesi_3' => 77 - Participant::where('session', 'sesi_3')->count(),
             'sesi_4' => 72 - Participant::where('session', 'sesi_4')->count(),
             'sesi_5' => 75 - Participant::where('session', 'sesi_5')->count(),
         ];
@@ -63,8 +63,8 @@ class ParticipantController extends Controller
 
         $kuotaSesi = [
             'sesi_1' => 76,
-            'sesi_2' => 77,
-            'sesi_3' => 82,
+            'sesi_2' => 72,
+            'sesi_3' => 77,
             'sesi_4' => 72,
             'sesi_5' => 75,
         ];

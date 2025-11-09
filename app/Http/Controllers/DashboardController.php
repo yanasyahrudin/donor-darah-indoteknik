@@ -19,8 +19,8 @@ class DashboardController extends Controller
         // Kuota maksimal per sesi (72 per sesi = 360 total)
         $kuotaSesi = [
             'sesi_1' => 76, // 72 + 4
-            'sesi_2' => 77, // 72 + 5
-            'sesi_3' => 82, // 72 + 10
+            'sesi_2' => 72, // update sesuai permintaan
+            'sesi_3' => 77, // update sesuai permintaan
             'sesi_4' => 72,
             'sesi_5' => 75, // 72 + 3
         ];
@@ -50,8 +50,8 @@ class DashboardController extends Controller
 
         $kuotaSesi = [
             'sesi_1' => 76,
-            'sesi_2' => 77,
-            'sesi_3' => 82,
+            'sesi_2' => 72,
+            'sesi_3' => 77,
             'sesi_4' => 72,
             'sesi_5' => 75,
         ];
